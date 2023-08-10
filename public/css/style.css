@@ -1,0 +1,36 @@
+.main-container{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.alerts{
+    width: 60%;
+}
+
+.alerts-notifications{
+    width: 35%;
+}
+
+.card-header{
+    display: flex;
+    justify-content: space-between;
+}
+
+table{
+    width: 100%;
+}
+
+#notifications .alert p{
+    margin: 0;
+}
+
+#notifications .alert{
+    display: flex;
+    justify-content: space-between;
+    align-items: center !important;
+}
+
+.error{
+    color: red;
+}

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
+        <link rel="stylesheet" href="/css/style.css">
+        <title>Binance Trading</title>
+    </head>
+
+    <body>
+        <div class="main-container">
+            <div class="alerts" id="accordion">
+                <div class="card">
+                  <div class="card-header" id="basic-alert">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link" data-toggle="collapse" data-target="#basic-alert-collapse">
+                        Basic Alert
+                      </button>
+                    </h5>
+                    <button id="basic-alert-btn" class="btn btn-primary" data-toggle="modal" data-target="#basic-alert-modal">Add Alert</button>
+                  </div>
+              
+                  <div id="basic-alert-collapse" class="collapse show" data-parent="#accordion">
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <td>Coin Name</td>
+                                    <td>Current Price</td>
+                                    <td>Target Price</td>
+                                    <td>Direction</td>
+                                    <td>Date Added</td>
+                                    <td>Action</td>
+                                </tr>
+                            </thead>
+                            <tbody id="ba-tbody">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="card">
+                  <div class="card-header" id="advance-alert">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#advance-alert-collapse-btn">
+                        Advance Alert
+                      </button>
+                    </h5>
+                    <button id="advance-alert-btn" class="btn btn-primary">Add Alert</button>
+                  </div>
+                  <div id="advance-alert-collapse-btn" class="collapse" data-parent="#accordion">
+                    <div class="card-body">
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+            <div class="alerts-notifications">
+                <div class="card">
+                    <div class="card-header">
+                      <h5 class="mb-0">
+                        <button class="btn btn-link">
+                            Notifications
+                        </button>
+                      </h5>
+
+                      <button class="btn btn-secondary" id="alert-sound-btn">Mute Alerts</button>
+                    </div>
+                
+                    <div class="card-body" id="notifications">
+                    </div>
+                  </div>
+            </div>
+        </div>
+
+        <!-- Basic Alert Modal -->
+        <div class="modal fade" id="basic-alert-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document" style="max-width: 600px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add Basic Alert</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="basic-alert-form">
+                            <div class="row">
+                              <div class="col-6">
+                                <div class="form-group">
+                                  <label for="ba-coin_name">Coin Name</label>
+                                  <input type="text" class="form-control" name="baCoinName" id="ba-coin_name" placeholder="Enter Coin Name">
+                                </div>
+    
+                                <div class="form-group">
+                                  <label for="ba-target_price">Target Price</label>
+                                  <input type="number" class="form-control" name="baTargetPrice" id="ba-target_price" placeholder="Target Price">
+                                </div>
+    
+                                <div class="form-group">
+                                    <label for="ba-direction">Direction</label>
+                                    <select class="form-control" name="baDirection" id="ba-direction">
+                                      <option selected disabled value="">Select Direction</option>
+                                      <option value="up">UP</option>
+                                      <option value="down">Down</option>
+                                    </select>
+                                </div>
+                              </div>
+
+                              <div class="col-6">
+                                <div class="form-group">
+                                    <label for="ba-date_added">Date Added</label>
+                                    <input type="date" class="form-control" name="baDateAdded" id="ba-date_added">
+                                </div>
+    
+                                <div class="form-group">
+                                  <label for="ba-note">Note</label>
+                                  <textarea class="form-control" name="baNote" id="ba-note" rows="3"></textarea>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button id="btn-add" type="submit" class="btn btn-primary">Add Alert</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Show Note Modal -->
+        <div id="showNoteModal" class="modal" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p id="note-element">sdfsdfsdfsdf</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bootstrap -->
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>   
+        
+        <!-- Jquery Validation -->
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+        <!-- Toastr -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        
+        <!-- Sweet Alert -->
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+        <!-- Custom Code -->
+        <script src="/js/common.js"></script>
+        <script src="/js/basic-alert.js"></script>
+        <script src="/js/ema.js"></script>
+        <script src="/js/main.js"></script>
+    </body>
+</html>
