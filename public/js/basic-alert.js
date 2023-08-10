@@ -43,12 +43,6 @@ const baFetchAlerts = async () => {
 
 // Display Basic Alerts
 const baUpdateTable = async () => {
-    if(baAlerts.length === 0){
-        const response = await fetch("/basic-alerts");
-        const alerts = await response.json();
-        baAlerts = alerts;
-    }
-
     var alertHtml = "";
 
     for(var i = 0; i < baAlerts.length; i++){
