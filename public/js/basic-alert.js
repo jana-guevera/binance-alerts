@@ -2,6 +2,7 @@ var binanceAllPricesAPI = "https://api.binance.com/api/v1/ticker/allPrices";
 var baCoinsPriceList = {};
 var baAlerts = [];
 var baValidator = {};
+var baForm = {};
 
 // Get prices from binance api and start monitoring
 const baGetPrices = async () => {
@@ -131,6 +132,7 @@ const addBasicAlert = async () => {
             showError({msg: "Unable to add alert. Please try again"});
         }finally{
             baValidator.resetForm();
+            baForm[0].reset();
             hideLoader("#btn-add", {content: "Add Alert"});
             closeModal("basic-alert-modal");
         }
@@ -306,7 +308,7 @@ const showNotifications = () => {
 }
 
 $(document).ready(() => {
-    const baForm = $("#basic-alert-form");
+    baForm = $("#basic-alert-form");
 
     baValidator = baForm.validate({
         rules:{

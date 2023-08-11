@@ -10,9 +10,10 @@
         <title>Binance Trading</title>
     </head>
 
-    <body>
-        <div class="main-container">
-            <div class="alerts" id="accordion">
+    <body class="container-fluid mt-2">
+        <div class="row">
+            <div class="col-lg-7 mb-3">
+              <div class="alerts" id="accordion">
                 <div class="card">
                   <div class="card-header" id="basic-alert">
                     <h5 class="mb-0">
@@ -24,7 +25,7 @@
                   </div>
               
                   <div id="basic-alert-collapse" class="collapse show" data-parent="#accordion">
-                    <div class="card-body">
+                    <div class="card-body table-container">
                         <table class="table table-striped">
                             <thead class="table-dark">
                                 <tr>
@@ -47,20 +48,22 @@
                 <div class="card">
                   <div class="card-header" id="advance-alert">
                     <h5 class="mb-0">
-                      <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#advance-alert-collapse-btn">
-                        Advance Alert
+                      <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#ema-target-collapse-btn">
+                        EMA with Target Alert
                       </button>
                     </h5>
-                    <button id="advance-alert-btn" class="btn btn-primary">Add Alert</button>
+                    <button id="ema-target-add-btn" class="btn btn-primary" data-toggle="modal" data-target="#ema-target-modal">Add Alert</button>
                   </div>
-                  <div id="advance-alert-collapse-btn" class="collapse" data-parent="#accordion">
+                  <div id="ema-target-collapse-btn" class="collapse" data-parent="#accordion">
                     <div class="card-body">
                     </div>
                   </div>
                 </div>
+              </div>
             </div>
 
-            <div class="alerts-notifications">
+            <div class="col-lg-5">
+              <div class="alerts-notifications">
                 <div class="card">
                     <div class="card-header">
                       <h5 class="mb-0">
@@ -74,7 +77,8 @@
                 
                     <div class="card-body" id="notifications">
                     </div>
-                  </div>
+                </div>
+              </div>
             </div>
         </div>
 
@@ -91,7 +95,7 @@
                     <div class="modal-body">
                         <form id="basic-alert-form">
                             <div class="row">
-                              <div class="col-6">
+                              <div class="col-lg-6">
                                 <div class="form-group">
                                   <label for="ba-coin_name">Coin Name</label>
                                   <input type="text" class="form-control" name="baCoinName" id="ba-coin_name" placeholder="Enter Coin Name">
@@ -112,7 +116,7 @@
                                 </div>
                               </div>
 
-                              <div class="col-6">
+                              <div class="col-lg-6">
                                 <div class="form-group">
                                     <label for="ba-date_added">Date Added</label>
                                     <input type="date" class="form-control" name="baDateAdded" id="ba-date_added">
@@ -133,6 +137,63 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- EMA with Target Alert Modal -->
+        <div class="modal fade" id="ema-target-modal" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document" style="max-width: 600px;">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Add Alert with EMA & Target</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  <div class="modal-body">
+                      <form id="tema-alert-form">
+                          <div class="row">
+                            <div class="col-lg-6">
+                              <div class="form-group">
+                                <label for="tema-coin_name">Coin Name</label>
+                                <input type="text" class="form-control" name="temaCoinName" id="tema-coin_name" placeholder="Enter Coin Name">
+                              </div>
+  
+                              <div class="form-group">
+                                <label for="tema-target_price">Target Price</label>
+                                <input type="number" class="form-control" name="temaTargetPrice" id="tema-target_price" placeholder="Target Price">
+                              </div>
+  
+                              <div class="form-group">
+                                  <label for="tema-direction">Direction</label>
+                                  <select class="form-control" name="temaDirection" id="tema-direction">
+                                    <option selected disabled value="">Select Direction</option>
+                                    <option value="up">UP</option>
+                                    <option value="down">Down</option>
+                                  </select>
+                              </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                              <div class="form-group">
+                                  <label for="tema-date_added">Date Added</label>
+                                  <input type="date" class="form-control" name="temaDateAdded" id="tema-date_added">
+                              </div>
+  
+                              <div class="form-group">
+                                <label for="tema-note">Note</label>
+                                <textarea class="form-control" name="temaNote" id="tema-note" rows="3"></textarea>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              <button id="tema-add" type="submit" class="btn btn-primary">Add Alert</button>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
         </div>
 
         <!-- Show Note Modal -->
@@ -169,7 +230,7 @@
         <!-- Custom Code -->
         <script src="/js/common.js"></script>
         <script src="/js/basic-alert.js"></script>
-        <script src="/js/ema.js"></script>
+        <script src="/js/ema_with_target.js"></script>
         <script src="/js/main.js"></script>
     </body>
 </html>

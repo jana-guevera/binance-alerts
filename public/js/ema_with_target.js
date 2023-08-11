@@ -31,10 +31,4 @@ const calculate = async (symbol, interval, range) => {
     console.log(ema);
 }
 
-
-// Example usage
-// const closingPrices = [100, 110, 105, 115, 120, 130, 140, 150, 145, 155];
-// const ema = calculateEMA(closingPrices, 12);
-// console.log(ema); 
-
 calculate("LINKUSDT", "15m", 100);

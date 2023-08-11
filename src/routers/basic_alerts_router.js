@@ -29,7 +29,6 @@ router.get("/basic-alerts", async (req, res) => {
         basicAlerts = await BasicAlert.find({});
 
         res.send(basicAlerts);
-        console.log(basicAlerts);
     }catch(e){
         res.send({error: e.message});
     }

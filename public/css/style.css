@@ -1,15 +1,5 @@
 .main-container{
-    display: flex;
-    justify-content: space-between;
     padding: 10px;
-}
-
-.alerts{
-    width: 60%;
-}
-
-.alerts-notifications{
-    width: 35%;
 }
 
 .card-header{
@@ -17,8 +7,8 @@
     justify-content: space-between;
 }
 
-table{
-    width: 100%;
+.table-container{
+    overflow-x: auto;
 }
 
 #notifications .alert p{
