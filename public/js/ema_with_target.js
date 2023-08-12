@@ -6,6 +6,9 @@ var temaAlerts = [];
 // ============ ema target form manupulation ====================
 const temaInputContainer = document.querySelector("#tema-ema-inputs");
 const temaInputAddBtn = document.querySelector("#tema-input-add-btn");
+const temaTargetPriceToggle = document.querySelector("#tema-target-price-toggle");
+const temaTargetPriceInputContainer = document.querySelector("#target-price-input-container");
+var temaIsTargetPriceNeeded = false;
 
 temaInputAddBtn.addEventListener("click", () => {
     const inputHtml = `
@@ -44,6 +47,18 @@ temaInputAddBtn.addEventListener("click", () => {
     temaInputContainer.insertAdjacentHTML("beforeend", inputHtml);
 });
 
+temaTargetPriceToggle.addEventListener("click", () => {
+    if(temaIsTargetPriceNeeded){
+        temaIsTargetPriceNeeded = false;
+        temaTargetPriceInputContainer.setAttribute("class", "hide");
+        temaTargetPriceToggle.textContent = "Add Target Price";
+    }else{
+        temaIsTargetPriceNeeded = true;
+        temaTargetPriceInputContainer.setAttribute("class", "");
+        temaTargetPriceToggle.textContent = "Remove Target Price";
+    }
+});
+
 const temaRemoveEmaInput = (e) => {
     e.parentElement.parentElement.remove()
 }
@@ -63,20 +78,39 @@ const temaAdd = async () => {
     const NoteInput = document.querySelector("#tema-note");
 
     const coin = CoinNameInput.value.toUpperCase() + "USDT";
-    const targetPrice = parseFloat(TargetPriceInput.value);
-    const direction = DirectionInput.value.trim();
     const addedDate = new Date(AddedDateInput.value).toISOString();
     const note = NoteInput.value;
     const coinCurrentPrice = parseFloat(baCoinsPriceList[coin]);
+    var targetPrice = parseFloat(TargetPriceInput.value);
+    var direction = DirectionInput.value.trim();
 
-    if(coinCurrentPrice < targetPrice && direction === "down"){
-        return temaValidator.showErrors({
-            "temaTargetPrice": "Target price should not be higher than the current price for down direction."
-        });
-    }else if(coinCurrentPrice > targetPrice && direction === "up"){
-        return temaValidator.showErrors({
-            "temaTargetPrice": "Target price should not be less than the current price for up direction."
-        });
+    if(temaIsTargetPriceNeeded){
+        if(!targetPrice){
+            return temaValidator.showErrors({
+                "temaTargetPrice": "Target Price should not be empty."
+            });
+        }
+
+        if(!direction){
+            return temaValidator.showErrors({
+                "temaDirection": "A direction should be selected."
+            });
+        }
+    }else{
+        targetPrice = undefined;
+        direction = undefined;
+    }
+
+    if(temaIsTargetPriceNeeded){
+        if(coinCurrentPrice < targetPrice && direction === "down"){
+            return temaValidator.showErrors({
+                "temaTargetPrice": "Target price should not be higher than the current price for down direction."
+            });
+        }else if(coinCurrentPrice > targetPrice && direction === "up"){
+            return temaValidator.showErrors({
+                "temaTargetPrice": "Target price should not be less than the current price for up direction."
+            });
+        }
     }
 
     if(!temaValidateEMAInputs()){
@@ -260,12 +294,15 @@ const temaGetEMAInputsData = () => {
 
 // ============ Target EMA Display ===================
 const temaTableRow = (currentAlert) => {
+    var targetPrice = currentAlert.targetPrice ? currentAlert.targetPrice: "Not Set";
+    var direction = currentAlert.direction ? currentAlert.direction.toUpperCase() : "Not Set";
+
     return `
         <tr id="tema-tr-${currentAlert._id}">
             <td>${currentAlert.coinName}</td>
             <td>${baCoinsPriceList[currentAlert.coinName]}</td>
-            <td>${currentAlert.targetPrice}</td>
-            <td>${currentAlert.direction.toUpperCase()}</td>
+            <td>${targetPrice}</td>
+            <td>${direction}</td>
             <td>${formatDate(currentAlert.dateAdded)}</td>
             <td>
                 <button class="btn btn-primary btn-sm" onclick="temaShowNote('${currentAlert._id}')"><i class="fas fa-eye"></i></button>
@@ -291,13 +328,22 @@ const temaShowNote = (id) => {
     var message = "<label>Alert Details:</label>";
 
     selectedAlert.emaTargets.forEach((target) => {
-        message += `
-            <p>
-                => when the price of ${selectedAlert.coinName} goes  
-                ${selectedAlert.direction} to ${selectedAlert.targetPrice} and its ${target.direction} 
-                ${target.emaRange} EMA on ${target.time} timeframe.
-            </p>
-        `;
+        if(selectedAlert.targetPrice && selectedAlert.direction){
+            message += `
+                <p>
+                    => when the price of ${selectedAlert.coinName} goes  
+                    ${selectedAlert.direction} to ${selectedAlert.targetPrice} and its ${target.direction} 
+                    ${target.emaRange} EMA on ${target.time} timeframe.
+                </p>
+            `;
+        }else{
+            message += `
+                <p>
+                    => When the price of ${selectedAlert.coinName} goes ${target.direction} 
+                    ${target.emaRange} EMA on ${target.time} timeframe.
+                </p>
+            `;
+        }
     });
 
     alertDetailsElement.innerHTML = message;
@@ -337,6 +383,10 @@ const temaCheckIfTargetPriceHit = async () => {
         var alert = temaAlerts[i];
         var currentPrice = parseFloat(baCoinsPriceList[alert.coinName]);
 
+        if(!alert.targetPrice && !alert.direction){
+            continue;
+        }
+
         if(alert.isTargetPriceHit){
             continue;
         }
@@ -359,8 +409,10 @@ const temaCalculateEmaForAlerts = async () => {
     for(var i = 0; i < temaAlerts.length; i++){
         var alert = temaAlerts[i];
 
-        if(!alert.isTargetPriceHit){
-            continue;
+        if(alert.targetPrice && alert.direction){
+            if(!alert.isTargetPriceHit){
+                continue;
+            }
         }
 
         for(var j = 0; j < alert.emaTargets.length; j++){
@@ -381,20 +433,30 @@ const temaCalculateEmaForAlerts = async () => {
             };
 
             if(emaTarget.direction === "above" && currentPrice >= ema){
-                notif.message = notif.coinName + " has gone " + alert.direction +
+                if(alert.targetPrice && alert.direction){
+                    notif.message = notif.coinName + " has gone " + alert.direction +
                                 " to the target price of " + alert.targetPrice +
                                 " and is above the " + emaTarget.emaRange + 
                                 " EMA on " + emaTarget.time + " timeframe.";
+                }else{
+                    notif.message = notif.coinName + " price has gone above the " + emaTarget.emaRange + 
+                                " EMA on " + emaTarget.time + " timeframe.";
+                }
 
                 const result = await addNotification(notif);
                 if(!result.error){
                     await temaUpdateOrRemoveAlert(alert, emaTarget._id);
                 }
             }else if(emaTarget.direction === "below" && currentPrice <= ema){
-                notif.message = notif.coinName + " has gone " + alert.direction +
+                if(alert.targetPrice && alert.direction){
+                    notif.message = notif.coinName + " has gone " + alert.direction +
                                 " to the target price of " + alert.targetPrice +
                                 " and is below the " + emaTarget.emaRange + 
                                 " EMA on " + emaTarget.time + " timeframe.";
+                }else{
+                    notif.message = notif.coinName + " price has gone below the " + emaTarget.emaRange + 
+                                " EMA on " + emaTarget.time + " timeframe.";
+                }
                 const result = await addNotification(notif);
                 if(!result.error){
                     await temaUpdateOrRemoveAlert(alert, emaTarget._id);
@@ -413,12 +475,6 @@ $(document).ready(() => {
             temaCoinName: {
                 required: true,
                 isCoinExist: true
-            },
-            temaTargetPrice:{
-                required: true,
-            },
-            temaDirection:{
-                required: true
             },
             temaDateAdded:{
                 required: true

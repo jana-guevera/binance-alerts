@@ -10,8 +10,7 @@ const notificationScheme = mongoose.Schema({
         min:0
     },
     direction:{
-        type: String,
-        required: true
+        type: String
     },
     note:{
         type: String

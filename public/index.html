@@ -172,20 +172,6 @@
                                 <label for="tema-coin_name">Coin Name</label>
                                 <input type="text" class="form-control" name="temaCoinName" id="tema-coin_name" placeholder="Enter Coin Name">
                               </div>
-  
-                              <div class="form-group">
-                                <label for="tema-target_price">Target Price</label>
-                                <input type="number" class="form-control" name="temaTargetPrice" id="tema-target_price" placeholder="Target Price">
-                              </div>
-  
-                              <div class="form-group">
-                                  <label for="tema-direction">Direction</label>
-                                  <select class="form-control" name="temaDirection" id="tema-direction">
-                                    <option selected disabled value="">Select Direction</option>
-                                    <option value="up">UP</option>
-                                    <option value="down">Down</option>
-                                  </select>
-                              </div>
 
                               <div class="form-group">
                                   <label for="tema-date_added">Date Added</label>
@@ -195,6 +181,24 @@
                               <div class="form-group">
                                 <label for="tema-note">Note</label>
                                 <textarea class="form-control" name="temaNote" id="tema-note" rows="3"></textarea>
+                              </div>
+
+                              <button type="button" id="tema-target-price-toggle" class="btn btn-secondary mb-2">Add Target Price</button>
+  
+                              <div class="hide" id="target-price-input-container">
+                                <div class="form-group">
+                                  <label for="tema-target_price">Target Price</label>
+                                  <input type="number" class="form-control" name="temaTargetPrice" id="tema-target_price" placeholder="Target Price">
+                                </div>
+    
+                                <div class="form-group">
+                                    <label for="tema-direction">Direction</label>
+                                    <select class="form-control" name="temaDirection" id="tema-direction">
+                                      <option selected disabled value="">Select Direction</option>
+                                      <option value="up">UP</option>
+                                      <option value="down">Down</option>
+                                    </select>
+                                </div>
                               </div>
                             </div>
 
