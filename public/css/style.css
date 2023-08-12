@@ -24,3 +24,26 @@
 .error{
     color: red;
 }
+
+.show{
+    display: block;
+}
+
+.hide{
+    display: none;
+}
+
+/* ============================ Target EMA styles =========================*/
+.tema-ema-input-box{
+    margin-bottom: 20px;
+}
+
+.tema-ema-input-box .item-row{
+    display: flex;
+    justify-content: space-between;
+}
+
+.tema-ema-input-box .item-row select,input{
+    width: 100%;
+}
+

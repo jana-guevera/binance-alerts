@@ -5,21 +5,13 @@ var baValidator = {};
 var baForm = {};
 
 // Get prices from binance api and start monitoring
-const baGetPrices = async () => {
-    const jsonData = await fetch(binanceAllPricesAPI);
-    const prices = await jsonData.json();
-
-    baCoinsPriceList = updateInstruments(prices);
-    await baFetchAlerts();
-    await baFetchNotification();
+const baStartAlert = async () => {
+    baAlerts = await baFetchAlerts();
+    notifications = await fetchNotification();
     await baUpdateTable();
     await baCheckCondition();
     showNotifications();
     playSound();
-
-    setTimeout(async () => {
-        baGetPrices();
-    }, 10000);
 }
 
 // Convert the binance api data to simple objects
@@ -38,7 +30,6 @@ const updateInstruments = (prices) => {
 const baFetchAlerts = async () => {
     const response = await fetch("/basic-alerts");
     const alerts = await response.json();
-    baAlerts = alerts;
     return alerts;
 }
 
@@ -195,6 +186,7 @@ const showNote = (id) => {
     });
 
     document.querySelector("#note-element").textContent = selectedAlert.note;
+    document.querySelector("#alert-details").innerHTML = "";
     showModal("showNoteModal");
 }
 
@@ -219,92 +211,14 @@ const baCheckCondition = async () => {
 
         if(currentAlert.direction === "up" && currentPrice >= currentAlert.targetPrice){
             notif.message = notif.coinName + " has gone up to the target price of " + currentAlert.targetPrice;
-            await baAddNotification(notif);
+            await addNotification(notif);
             await baRemoveAlert(currentAlert._id);
         }else if(currentAlert.direction === "down" && currentPrice <= currentAlert.targetPrice){
             notif.message = notif.coinName + " has gone down to the target price of " + currentAlert.targetPrice;
-            await baAddNotification(notif);
+            await addNotification(notif);
             await baRemoveAlert(currentAlert._id);
         }
     }
-}
-
-const baFetchNotification = async () => {
-    try{
-        const response = await fetch("/notifications");
-        const notis = await response.json();
-        notifications = notis;
-        return notis;
-    }catch(e){
-        console.log(e);
-    }
-}
-
-const baAddNotification = async (notification) => {
-    try{
-        const response = await fetch("/notifications", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(notification)
-        });
-    
-        const notif = await response.json();
-
-        if(notif.error){
-            return showError({msg: notif.error});
-        }
-
-        notifications.push(notif);
-        const notifDiv = document.querySelector("#notifications");
-        notifDiv.innerHTML = notifDiv.innerHTML + generateNotif(notif);
-    }catch(e){
-        showError({msg: e.message});
-    }
-}
-
-const baRemoveNotification = async (id) => {
-    const url = "/notifications/" + id;
-
-    showLoader("#notif-del-" + id, {content: generalLoader});
-
-    try{
-        const response = await fetch(url, {
-            method: "DELETE",
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-    
-        const notif = await response.json();
-    
-        if(notif.error){
-            return showError({msg: notif.error});
-        }
-        
-        showSuccess({msg: "Notification deleted successfully!"});
-        document.querySelector("#notif-box-" + id).remove();
-        notifications = notifications.filter((n) => {
-            return n._id !== id;
-        });
-        playSound();
-    }catch(e){
-        showError({msg: "Something went wrong. Unable to delete notification!"});
-        hideLoader("#notif-del-" + id, {content: `<i class="fas fa-trash"></i>`});
-    }
-}
-
-const showNotifications = () => {
-    var notiHtml = ``;
-
-    for(var i = 0; i < notifications.length; i++){
-        var notification = notifications[i];
-
-        notiHtml += generateNotif(notification);
-    }
-
-    document.querySelector("#notifications").innerHTML = notiHtml;
 }
 
 $(document).ready(() => {
@@ -337,4 +251,3 @@ $(document).ready(() => {
     });
 });
 
-baGetPrices();

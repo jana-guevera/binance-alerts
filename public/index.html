@@ -48,14 +48,29 @@
                 <div class="card">
                   <div class="card-header" id="advance-alert">
                     <h5 class="mb-0">
-                      <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#ema-target-collapse-btn">
+                      <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#ema-target-collapse">
                         EMA with Target Alert
                       </button>
                     </h5>
                     <button id="ema-target-add-btn" class="btn btn-primary" data-toggle="modal" data-target="#ema-target-modal">Add Alert</button>
                   </div>
-                  <div id="ema-target-collapse-btn" class="collapse" data-parent="#accordion">
-                    <div class="card-body">
+                  <div id="ema-target-collapse" class="collapse" data-parent="#accordion">
+                    <div class="card-body table-container">
+                        <table class="table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <td>Coin Name</td>
+                                    <td>Current Price</td>
+                                    <td>Target Price</td>
+                                    <td>Direction</td>
+                                    <td>Date Added</td>
+                                    <td>Action</td>
+                                </tr>
+                            </thead>
+                            <tbody id="tema-tbody">
+                                
+                            </tbody>
+                        </table>
                     </div>
                   </div>
                 </div>
@@ -141,7 +156,7 @@
 
         <!-- EMA with Target Alert Modal -->
         <div class="modal fade" id="ema-target-modal" tabindex="-1" role="dialog">
-          <div class="modal-dialog" role="document" style="max-width: 600px;">
+          <div class="modal-dialog" role="document" style="max-width: 750px;">
               <div class="modal-content">
                   <div class="modal-header">
                       <h5 class="modal-title" id="exampleModalLabel">Add Alert with EMA & Target</h5>
@@ -152,7 +167,7 @@
                   <div class="modal-body">
                       <form id="tema-alert-form">
                           <div class="row">
-                            <div class="col-lg-6">
+                            <div class="col-lg-5">
                               <div class="form-group">
                                 <label for="tema-coin_name">Coin Name</label>
                                 <input type="text" class="form-control" name="temaCoinName" id="tema-coin_name" placeholder="Enter Coin Name">
@@ -171,18 +186,54 @@
                                     <option value="down">Down</option>
                                   </select>
                               </div>
-                            </div>
 
-                            <div class="col-lg-6">
                               <div class="form-group">
                                   <label for="tema-date_added">Date Added</label>
                                   <input type="date" class="form-control" name="temaDateAdded" id="tema-date_added">
                               </div>
-  
+
                               <div class="form-group">
                                 <label for="tema-note">Note</label>
                                 <textarea class="form-control" name="temaNote" id="tema-note" rows="3"></textarea>
                               </div>
+                            </div>
+
+                            <div class="col-lg-7">
+                              <div class="form-group" id="tema-ema-inputs">
+                                <label for="">EMAs</label>
+                                <div class="tema-ema-input-box">
+                                  <div class="item-row">
+                                    <select onClick="temaValidateEMAInputs()" class="tema-time-input form-control">
+                                      <option value="" selected disabled>Timeframe</option>
+                                      <option value="1m">1m</option>
+                                      <option value="3m">3m</option>
+                                      <option value="5m">5m</option>
+                                      <option value="15m">15m</option>
+                                      <option value="30m">30m</option>
+                                      <option value="1h">1H</option>
+                                      <option value="2h">2H</option>
+                                      <option value="4h">4H</option>
+                                      <option value="6h">6H</option>
+                                      <option value="8h">8H</option>
+                                      <option value="12h">12H</option>
+                                      <option value="1d">1D</option>
+                                      <option value="3d">3D</option>
+                                      <option value="1w">1W</option>
+                                      <option value="1M">1M</option>
+                                    </select>
+                                    <select onClick="temaValidateEMAInputs()" class="tema-ema-direction form-control">
+                                      <option value="" disabled selected>Direction</option>
+                                      <option value="above">Above</option>
+                                      <option value="below">Below</option>
+                                    </select>
+                                    <input onChange="temaValidateEMAInputs()" type="number" placeholder="EMA Range">
+                                    <!-- <button class="btn btn-danger btn-sm">X</button> -->
+                                  </div>
+                                  <p class="error hide">Inputs cannot be empty</p>
+                                </div>
+                              </div>
+
+                              <button type="button" id="tema-input-add-btn" class="btn btn-info btn-block">Add EMA</button>
                             </div>
                           </div>
 
@@ -201,13 +252,18 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title">Note</h5>
+                <h5 class="modal-title">Details</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
-                <p id="note-element">sdfsdfsdfsdf</p>
+                <label for="">Note:</label>
+                <span id="note-element">No note added</span>
+
+                <div id="alert-details">
+
+                </div>
               </div>
             </div>
           </div>

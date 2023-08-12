@@ -16,7 +16,6 @@ router.post("/notifications", async (req, res) => {
         const notification = new Notification(req.body);
         await notification.save();
         res.send(notification);
-
         sendAlertEmail({
             email: "bhagi95ozarah@gmail.com",
             subject: "Target Price Hit",
