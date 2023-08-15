@@ -8,6 +8,7 @@ const generalLoader = `<span class="spinner-border spinner-border-sm" role="stat
 
 // Common data
 var notifications = [];
+var isUpdating = false;
 
 // Welcome Message
 swal({
@@ -103,16 +104,6 @@ function stopSound(){
 }
 
 // =========================== Notification CRUD ========================
-const fetchNotification = async () => {
-    try{
-        const response = await fetch("/notifications");
-        const notis = await response.json();
-        return notis;
-    }catch(e){
-        console.log(e);
-    }
-}
-
 const showNotifications = () => {
     var notiHtml = ``;
 
@@ -123,33 +114,6 @@ const showNotifications = () => {
     }
 
     document.querySelector("#notifications").innerHTML = notiHtml;
-}
-
-const addNotification = async (notification) => {
-    try{
-        const response = await fetch("/notifications", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(notification)
-        });
-    
-        const notif = await response.json();
-
-        if(notif.error){
-            showError({msg: notif.error});
-            return notif;
-        }
-
-        notifications.push(notif);
-        const notifDiv = document.querySelector("#notifications");
-        notifDiv.innerHTML = notifDiv.innerHTML + generateNotif(notif);
-        return notif;
-    }catch(e){
-        showError({msg: e.message});
-        return {error: e.message}
-    }
 }
 
 const removeNotification = async (id) => {
@@ -181,33 +145,4 @@ const removeNotification = async (id) => {
         showError({msg: "Something went wrong. Unable to delete notification!"});
         hideLoader("#notif-del-" + id, {content: `<i class="fas fa-trash"></i>`});
     }
-}
-
-
-// ================= EMA Calculator ===========================
-// Function to get the closeing price
-const getClosingPriceArray = (prices) => {
-    const closingPrices = [];
-
-    for(var i = 0; i < prices.length; i++){
-        closingPrices.push(prices[i][4]);
-    }
-    
-    return closingPrices;
-}
-
-const calculateEMA = (closingPrices, period) => {
-    const k = 2 / (period + 1);
-    let ema = closingPrices[0];
-    for (let i = 1; i < closingPrices.length; i++) {
-      ema = (closingPrices[i] * k) + (ema * (1 - k));
-    }
-  
-    return ema;
-}
-
-const fetchCandleData = async (symbol, interval) => {
-    const response = await fetch("https://api.binance.com/api/v3/klines?symbol="+symbol+"&interval=" + interval);
-    const prices = await response.json();
-    return prices;
 }

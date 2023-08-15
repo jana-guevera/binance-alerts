@@ -3,7 +3,7 @@ var temaForm = {};
 var temaValidator = {};
 var temaAlerts = [];
 
-// ============ ema target form manupulation ====================
+// ============ Tema Form Manupulation ====================
 const temaInputContainer = document.querySelector("#tema-ema-inputs");
 const temaInputAddBtn = document.querySelector("#tema-input-add-btn");
 const temaTargetPriceToggle = document.querySelector("#tema-target-price-toggle");
@@ -64,11 +64,6 @@ const temaRemoveEmaInput = (e) => {
 }
 
 // ============ Target EMA CRUD Operations =========================
-const temaFetchAlert = async () => {
-    const response = await fetch("/ema-target-alerts");
-    const alerts = await response.json();
-    return alerts;
-}
 
 const temaAdd = async () => {
     const CoinNameInput = document.querySelector("#tema-coin_name");
@@ -160,51 +155,6 @@ const temaAdd = async () => {
                 box.remove();
             }
         });
-    }
-}
-
-// Update the alert isTargetHit Field to true
-const temaUpdateAlertTargetHit = async (temaAlert) => {
-    temaAlert.isTargetPriceHit = true;
-
-    try{
-        const response = await fetch("/ema-target-alerts", {
-            method: "PATCH",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(temaAlert)
-        });
-    
-        const alert = await response.json();
-
-        if(alert.error){
-            return console.log(alert.error);
-        }
-    }catch(e){
-        console.log(e);
-    }
-}
-
-const temaUpdateOrRemoveAlert = async (temaAlert, emaTargetId) => {
-    try{
-        const response = await fetch("/ema-target-alerts/update-or-delete/" + emaTargetId, {
-            method: "PATCH",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(temaAlert)
-        });
-    
-        const alert = await response.json();
-
-        if(alert.error){
-            return console.log(alert.error);
-        }
-
-
-    }catch(e){
-        console.log(e);
     }
 }
 
@@ -361,109 +311,6 @@ const temaUpdateTable = () => {
     }
 
     document.querySelector("#tema-tbody").innerHTML = alertHtml;
-}
-
-// ============ Target EMA Logic ===================
-const temaStartAlert = async () => {
-    if(baCoinsPriceList["BTCUSDT"]){
-        temaAlerts = await temaFetchAlert();
-        temaUpdateTable();
-
-        await temaCheckIfTargetPriceHit();
-        await temaCalculateEmaForAlerts();
-    }
-}
-
-const temaCheckIfTargetPriceHit = async () => {
-    if(temaAlerts.length === 0){
-        return;
-    }
-
-    for(var i = 0; i < temaAlerts.length; i++){
-        var alert = temaAlerts[i];
-        var currentPrice = parseFloat(baCoinsPriceList[alert.coinName]);
-
-        if(!alert.targetPrice && !alert.direction){
-            continue;
-        }
-
-        if(alert.isTargetPriceHit){
-            continue;
-        }
-
-        if(alert.direction === "up" && currentPrice >= alert.targetPrice){
-            await temaUpdateAlertTargetHit(alert);
-            alert.isTargetPriceHit = true;
-        }else if(alert.direction === "down" && currentPrice <= alert.targetPrice){
-            await temaUpdateAlertTargetHit(alert);
-            alert.isTargetPriceHit = true;
-        }
-    }
-}
-
-const temaCalculateEmaForAlerts = async () => {
-    if(temaAlerts.length === 0){
-        return;
-    }
-
-    for(var i = 0; i < temaAlerts.length; i++){
-        var alert = temaAlerts[i];
-
-        if(alert.targetPrice && alert.direction){
-            if(!alert.isTargetPriceHit){
-                continue;
-            }
-        }
-
-        for(var j = 0; j < alert.emaTargets.length; j++){
-            var emaTarget = alert.emaTargets[j];
-            const candleData =  await fetchCandleData(alert.coinName, emaTarget.time);
-            const closingPrices = getClosingPriceArray(candleData);
-            ema = calculateEMA(closingPrices, emaTarget.emaRange);
-
-            const currentPrice = parseFloat(baCoinsPriceList[alert.coinName]);
-            var notif = {
-                _id: emaTarget._id,
-                coinName: alert.coinName, 
-                targetPrice: alert.targetPrice, 
-                direction: alert.direction, 
-                note:alert.note,
-                dateAdded: alert.dateAdded,
-                alertType: "tema",
-            };
-
-            if(emaTarget.direction === "above" && currentPrice >= ema){
-                if(alert.targetPrice && alert.direction){
-                    notif.message = notif.coinName + " has gone " + alert.direction +
-                                " to the target price of " + alert.targetPrice +
-                                " and is above the " + emaTarget.emaRange + 
-                                " EMA on " + emaTarget.time + " timeframe.";
-                }else{
-                    notif.message = notif.coinName + " price has gone above the " + emaTarget.emaRange + 
-                                " EMA on " + emaTarget.time + " timeframe.";
-                }
-
-                const result = await addNotification(notif);
-                if(!result.error){
-                    await temaUpdateOrRemoveAlert(alert, emaTarget._id);
-                }
-            }else if(emaTarget.direction === "below" && currentPrice <= ema){
-                if(alert.targetPrice && alert.direction){
-                    notif.message = notif.coinName + " has gone " + alert.direction +
-                                " to the target price of " + alert.targetPrice +
-                                " and is below the " + emaTarget.emaRange + 
-                                " EMA on " + emaTarget.time + " timeframe.";
-                }else{
-                    notif.message = notif.coinName + " price has gone below the " + emaTarget.emaRange + 
-                                " EMA on " + emaTarget.time + " timeframe.";
-                }
-                const result = await addNotification(notif);
-                if(!result.error){
-                    await temaUpdateOrRemoveAlert(alert, emaTarget._id);
-                }
-            }
-        }
-    }
 }
 
 // ============ Target EMA Form Validation ===================

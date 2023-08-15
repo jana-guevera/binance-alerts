@@ -1,40 +1,10 @@
-var binanceAllPricesAPI = "https://api.binance.com/api/v1/ticker/allPrices";
 var baCoinsPriceList = {};
 var baAlerts = [];
 var baValidator = {};
 var baForm = {};
 
-// Get prices from binance api and start monitoring
-const baStartAlert = async () => {
-    baAlerts = await baFetchAlerts();
-    notifications = await fetchNotification();
-    await baUpdateTable();
-    await baCheckCondition();
-    showNotifications();
-    playSound();
-}
-
-// Convert the binance api data to simple objects
-const updateInstruments = (prices) => {
-
-    const latestPrices = {};
-
-    prices.forEach(({ symbol, price }) => {
-        latestPrices[symbol] = parseFloat(price)
-    });
-
-    return latestPrices;
-}
-
-// Fetch Users basic alerts
-const baFetchAlerts = async () => {
-    const response = await fetch("/basic-alerts");
-    const alerts = await response.json();
-    return alerts;
-}
-
-// Display Basic Alerts
-const baUpdateTable = async () => {
+// Populate basic alert table
+const baUpdateTable = () => {
     var alertHtml = "";
 
     for(var i = 0; i < baAlerts.length; i++){
@@ -188,37 +158,6 @@ const showNote = (id) => {
     document.querySelector("#note-element").textContent = selectedAlert.note;
     document.querySelector("#alert-details").innerHTML = "";
     showModal("showNoteModal");
-}
-
-
-// =================================== Alert Login ===================================
-
-const baCheckCondition = async () => {
-    const alerts = baAlerts;
-
-    for(var i = 0; i < alerts.length; i++){
-        var currentAlert = alerts[i];
-        var currentPrice = parseFloat(baCoinsPriceList[currentAlert.coinName]);
-        var notif = {
-            _id: currentAlert._id,
-            coinName: currentAlert.coinName, 
-            targetPrice: currentAlert.targetPrice, 
-            direction: currentAlert.direction, 
-            note:currentAlert.note,
-            dateAdded: currentAlert.dateAdded,
-            alertType: "basic",
-        };
-
-        if(currentAlert.direction === "up" && currentPrice >= currentAlert.targetPrice){
-            notif.message = notif.coinName + " has gone up to the target price of " + currentAlert.targetPrice;
-            await addNotification(notif);
-            await baRemoveAlert(currentAlert._id);
-        }else if(currentAlert.direction === "down" && currentPrice <= currentAlert.targetPrice){
-            notif.message = notif.coinName + " has gone down to the target price of " + currentAlert.targetPrice;
-            await addNotification(notif);
-            await baRemoveAlert(currentAlert._id);
-        }
-    }
 }
 
 $(document).ready(() => {

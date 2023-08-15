@@ -1,14 +1,16 @@
-const startApp = async () => {
-    const jsonData = await fetch(binanceAllPricesAPI);
-    const prices = await jsonData.json();
-    baCoinsPriceList = updateInstruments(prices);
+// ====================== Socket.io ===========================
+const socket = io();
 
-    baStartAlert();
-    temaStartAlert();
+socket.on("data", (data) => {
+    baCoinsPriceList = data.coinsCurrentPrices;
+    baAlerts = data.baAlerts;
+    temaAlerts = data.temaAlerts;
+    notifications = data.notifications;
 
-    setTimeout(async () => {
-        startApp();
-    }, 10000);
-}
+    baUpdateTable();
+    temaUpdateTable();
+    showNotifications();
+    playSound();
+});
 
-startApp();
+
