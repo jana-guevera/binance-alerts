@@ -265,42 +265,6 @@ const temaTableRow = (currentAlert) => {
     `;
 }
 
-const temaShowNote = (id) => {
-    const selectedAlert = temaAlerts.find((alert) => {
-        return alert._id === id;
-    });
-
-    if(selectedAlert.note.trim().length > 0){
-        document.querySelector("#note-element").textContent = selectedAlert.note;
-    }
-
-    const alertDetailsElement = document.querySelector("#alert-details");
-    var message = "<label>Alert Details:</label>";
-
-    selectedAlert.emaTargets.forEach((target) => {
-        if(selectedAlert.targetPrice && selectedAlert.direction){
-            message += `
-                <p>
-                    => when the price of ${selectedAlert.coinName} goes  
-                    ${selectedAlert.direction} to ${selectedAlert.targetPrice} and its ${target.direction} 
-                    ${target.emaRange} EMA on ${target.time} timeframe.
-                </p>
-            `;
-        }else{
-            message += `
-                <p>
-                    => When the price of ${selectedAlert.coinName} goes ${target.direction} 
-                    ${target.emaRange} EMA on ${target.time} timeframe.
-                </p>
-            `;
-        }
-    });
-
-    alertDetailsElement.innerHTML = message;
-
-    showModal("showNoteModal");
-}
-
 const temaUpdateTable = () => {
     var alertHtml = "";
 

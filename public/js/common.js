@@ -56,17 +56,6 @@ const formatDate = (date) => {
     return new Date(date).toLocaleDateString();
 }
 
-const generateNotif = (notif) => {
-    return `
-        <div class="alert alert-warning" role="alert" id="notif-box-${notif._id}">
-            <p>${notif.message}</p>
-            <button class="btn btn-danger btn-sm" id="notif-del-${notif._id}" onClick="removeNotification('${notif._id}')">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>
-    `;
-}
-
 jQuery.validator.addMethod("isCoinExist", function(value, element){
     var coin = value.toUpperCase() + "USDT";
 
@@ -104,6 +93,22 @@ function stopSound(){
 }
 
 // =========================== Notification CRUD ========================
+const generateNotif = (notif) => {
+    return `
+        <div class="alert alert-warning" role="alert" id="notif-box-${notif._id}">
+            <p>${notif.message}</p>
+            <div class="notif-action">
+                <button class="btn btn-primary btn-sm" onClick="showNotificationDetails('${notif._id}')">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" id="notif-del-${notif._id}" onClick="removeNotification('${notif._id}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `;
+}
+
 const showNotifications = () => {
     var notiHtml = ``;
 
@@ -144,5 +149,63 @@ const removeNotification = async (id) => {
     }catch(e){
         showError({msg: "Something went wrong. Unable to delete notification!"});
         hideLoader("#notif-del-" + id, {content: `<i class="fas fa-trash"></i>`});
+    }
+}
+
+// =========================== Show Details ===========================
+const showNote = (id) => {
+    const selectedAlert = baAlerts.find((alert) => {
+        return alert._id === id;
+    });
+
+    document.querySelector("#note-element").textContent = selectedAlert.note;
+    document.querySelector("#alert-details").innerHTML = "";
+    showModal("showNoteModal");
+}
+
+const temaShowNote = (id) => {
+    const selectedAlert = temaAlerts.find((alert) => {
+        return alert._id === id;
+    });
+
+    if(selectedAlert.note.trim().length > 0){
+        document.querySelector("#note-element").textContent = selectedAlert.note;
+    }
+
+    const alertDetailsElement = document.querySelector("#alert-details");
+    var message = "<label>Alert Details:</label>";
+
+    selectedAlert.emaTargets.forEach((target) => {
+        if(selectedAlert.targetPrice && selectedAlert.direction){
+            message += `
+                <p>
+                    => when the price of ${selectedAlert.coinName} goes  
+                    ${selectedAlert.direction} to ${selectedAlert.targetPrice} and its ${target.direction} 
+                    ${target.emaRange} EMA on ${target.time} timeframe.
+                </p>
+            `;
+        }else{
+            message += `
+                <p>
+                    => When the price of ${selectedAlert.coinName} goes ${target.direction} 
+                    ${target.emaRange} EMA on ${target.time} timeframe.
+                </p>
+            `;
+        }
+    });
+
+    alertDetailsElement.innerHTML = message;
+
+    showModal("showNoteModal");
+}
+
+const showNotificationDetails = (id) => {
+    const selectedNotif = notifications.find((notif) => {
+        return notif._id === id;
+    });
+
+    if(selectedNotif.note.trim().length > 0){
+        document.querySelector("#note-element").textContent = selectedNotif.note;
+        showModal("showNoteModal");
     }
 }

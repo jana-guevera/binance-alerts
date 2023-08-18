@@ -149,17 +149,6 @@ const baRemoveAlert = async (id) => {
     }
 }
 
-// Show note 
-const showNote = (id) => {
-    const selectedAlert = baAlerts.find((alert) => {
-        return alert._id === id;
-    });
-
-    document.querySelector("#note-element").textContent = selectedAlert.note;
-    document.querySelector("#alert-details").innerHTML = "";
-    showModal("showNoteModal");
-}
-
 $(document).ready(() => {
     baForm = $("#basic-alert-form");
 
