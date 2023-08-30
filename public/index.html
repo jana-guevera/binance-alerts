@@ -74,6 +74,39 @@
                     </div>
                   </div>
                 </div>
+
+                <div class="card">
+                  <div class="card-header" id="market-cap">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#market-cap-collapse">
+                        Market-Cap
+                      </button>
+                    </h5>
+
+                    <div class="market-cap-search">
+                      <input type="Number" class="form-control" placeholder="Market Cap">
+                      <button onclick="marketCapSearch()" id="market-cap-btn" class="btn btn-primary">Search</button>
+                    </div>
+                  </div>
+
+                  <div id="market-cap-collapse" class="collapse" data-parent="#accordion">
+                    <div class="card-body table-container">
+                        <table class="table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <td>Coin Name</td>
+                                    <td>Current Price</td>
+                                    <td>Circulating Supply</td>
+                                    <td>Market Cap</td>
+                                </tr>
+                            </thead>
+                            <tbody id="market-cap-tbody">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -294,6 +327,7 @@
         <script src="/js/common.js"></script>
         <script src="/js/basic-alert.js"></script>
         <script src="/js/ema_with_target.js"></script>
+        <script src="/js/market-cap.js"></script>
         <script src="/js/main.js"></script>
     </body>
 </html>

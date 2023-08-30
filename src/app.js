@@ -12,6 +12,7 @@ const notificationLogic = require("./logic/notification.js");
 const basicAlertRouter = require("./routers/basic_alerts_router.js");
 const emaTargetAlertRouter = require("./routers/ema-target-alert-router.js");
 const notificationRouter = require("./routers/notification-router.js");
+const marketCapRouter = require("./routers/market_cap_router.js");
 
 const app = express();
 const server = http.createServer(app);
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use(basicAlertRouter);
 app.use(emaTargetAlertRouter);
 app.use(notificationRouter);
+app.use(marketCapRouter);
 
 var coinsCurrentPrices = {};
 var baAlerts = [];

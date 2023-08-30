@@ -56,3 +56,11 @@
     width: 100%;
 }
 
+/* =================================== Market Cap ====================== */
+.market-cap-search{
+    display: flex;
+}
+
+.market-cap-search input{
+    margin-right: 10px;
+}
