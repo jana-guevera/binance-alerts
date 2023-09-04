@@ -30,9 +30,9 @@ const marketCapSearch = async () => {
         });
 
         document.querySelector("#market-cap-tbody").innerHTML = tbodyHtml;
-        hideLoader("#market-cap-btn", {content: "Search"});
     }catch(e){
         showError({msg: e.message});
+    }finally{
         hideLoader("#market-cap-btn", {content: "Search"});
     }
 }
