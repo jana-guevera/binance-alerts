@@ -33,6 +33,7 @@ const marketCapSearch = async () => {
         hideLoader("#market-cap-btn", {content: "Search"});
     }catch(e){
         showError({msg: e.message});
+        hideLoader("#market-cap-btn", {content: "Search"});
     }
 }
 
