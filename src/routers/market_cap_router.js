@@ -1,5 +1,5 @@
 const express = require("express");
-const {fetchCoinMarketCap} = require("../logic/market-cap.js");
+const binance = require("../binance/binance_futures.js");
 
 const router = new express.Router();
 
@@ -7,14 +7,32 @@ router.get("/market-cap", async (req, res) => {
     try{
         const limit = req.query.limit || 21000000;
 
-        const coins = await fetchCoinMarketCap();
-        const filteredCoins = coins.filter(c => c.marketCap <= parseFloat(limit));
+        circulatingSupply = await binance.getCiculatingSupply();
+        unFilteredPrices = await binance.getCoinsPrice();
+        coinsCurrentPrices = binance.updateInstruments(unFilteredPrices, circulatingSupply);
         
-        if(filteredCoins){
-            return res.send(filteredCoins);
-        }
+        coinsName = Object.keys(coinsCurrentPrices);
+        filteredCoins = [];
 
-        res.send([]);
+        for(var i = 0; i < coinsName.length; i++){
+            const cName = coinsName[i];
+            
+            if(circulatingSupply[cName]){
+                const supply = circulatingSupply[cName];
+                const marketCap = coinsCurrentPrices[cName].price * supply;
+
+                if(marketCap <= parseFloat(limit) && cName.includes("USDT")){
+                    filteredCoins.push({
+                        symbol: cName,
+                        circulatingSupply: supply,
+                        marketCap: marketCap,
+                        currentPrice: coinsCurrentPrices[cName].price
+                    });
+                }
+            }
+        }   
+
+        res.send(filteredCoins);
     }catch(e){
         res.send({error: e.message});
         console.log(e);
