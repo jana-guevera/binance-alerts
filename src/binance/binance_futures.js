@@ -4,9 +4,15 @@ const client = new USDMClient({});
 
 const getCoinsPrice = async () => {
     // const coins = await client.get24hrChangeStatistics();
-    const result = await fetch("https://fapi.binance.com/fapi/v1/ticker/24hr");
-    const coins = await result.json();
-    return coins;
+    try{
+        const result = await fetch("https://fapi.binance.com/fapi/v1/ticker/24hr");
+        const coins = await result.json();
+        
+        return coins;
+    }catch(e){
+        console.log(e);
+        return [];
+    }
 }
 
 const updateInstruments = (prices, cSupply) => {
