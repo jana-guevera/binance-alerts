@@ -3,7 +3,9 @@ const { USDMClient  } = require('binance');
 const client = new USDMClient({});
 
 const getCoinsPrice = async () => {
-    const coins = await client.get24hrChangeStatistics();
+    // const coins = await client.get24hrChangeStatistics();
+    const result = await fetch("https://fapi.binance.com/fapi/v1/ticker/24hr");
+    const coins = await result.json();
     return coins;
 }
 
