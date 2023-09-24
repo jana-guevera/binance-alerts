@@ -209,3 +209,9 @@ const showNotificationDetails = (id) => {
         showModal("showNoteModal");
     }
 }
+
+// Remove decimal places
+const reduceDecimal = (num) => {
+    const formattedNumber = Math.floor(num * 1000000) / 1000000;
+    return formattedNumber;
+}

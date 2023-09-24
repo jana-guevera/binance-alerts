@@ -13,7 +13,7 @@ const marketCapSearch = async () => {
             tbodyHtml += `
                 <tr>
                     <td>${coin}</td>
-                    <td>${parseFloat(currentCoin.price).toFixed(4)}</td>
+                    <td>${reduceDecimal(currentCoin.price)}</td>
                     <td>${getNumber(currentCoin.cSupply)}</td>
                     <td>${getNumber(currentCoin.marketCap)}</td>
                 </tr>

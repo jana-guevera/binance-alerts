@@ -22,7 +22,7 @@ const baTableRow = (currentAlert) => {
 
     if(baCoinsPriceList[currentAlert.coinName]){
         currentPrice = baCoinsPriceList[currentAlert.coinName].price;
-        currentPrice = parseFloat(currentPrice).toFixed(4);
+        currentPrice = reduceDecimal(currentPrice);
     }
 
     return `

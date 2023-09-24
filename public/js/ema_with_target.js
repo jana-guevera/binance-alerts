@@ -248,7 +248,7 @@ const temaTableRow = (currentAlert) => {
     var direction = currentAlert.direction ? currentAlert.direction.toUpperCase() : "Not Set";
 
     var currentPrice = baCoinsPriceList[currentAlert.coinName].price;
-    currentPrice = parseFloat(currentPrice).toFixed(4);
+    currentPrice = reduceDecimal(currentPrice);
 
     return `
         <tr id="tema-tr-${currentAlert._id}">
