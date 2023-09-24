@@ -75,7 +75,7 @@ const temaAdd = async () => {
     const coin = CoinNameInput.value.toUpperCase() + "USDT";
     const addedDate = new Date(AddedDateInput.value).toISOString();
     const note = NoteInput.value;
-    const coinCurrentPrice = parseFloat(baCoinsPriceList[coin]);
+    const coinCurrentPrice = parseFloat(baCoinsPriceList[coin].price);
     var targetPrice = parseFloat(TargetPriceInput.value);
     var direction = DirectionInput.value.trim();
 
@@ -250,7 +250,7 @@ const temaTableRow = (currentAlert) => {
     return `
         <tr id="tema-tr-${currentAlert._id}">
             <td>${currentAlert.coinName}</td>
-            <td>${baCoinsPriceList[currentAlert.coinName]}</td>
+            <td>${baCoinsPriceList[currentAlert.coinName].price}</td>
             <td>${targetPrice}</td>
             <td>${direction}</td>
             <td>${formatDate(currentAlert.dateAdded)}</td>

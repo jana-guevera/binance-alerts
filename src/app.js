@@ -4,6 +4,7 @@ const express = require("express");
 const socketio = require("socket.io");
 require("./db/mongoose.js");
 
+const binanceF = require("./binance/binance_futures.js");
 const binancePrices = require("./logic/binance-price-list.js");
 const baCheckCondition = require("./logic/basic-alert-checker.js");
 const temaAlertCheck = require("./logic/ema-target-checker.js");
@@ -27,14 +28,22 @@ app.use(emaTargetAlertRouter);
 app.use(notificationRouter);
 app.use(marketCapRouter);
 
+var coinsSupply = {};
 var coinsCurrentPrices = {};
 var baAlerts = [];
 var temaAlerts = [];
 var notifications = [];
 
+const start = async () => {
+    coinsSupply = await binanceF.getCiculatingSupply();
+    starChecking();
+}
+
+
 const starChecking = async () => {
     try{
-        coinsCurrentPrices = await binancePrices();
+        const unfilteredPrice = await binanceF.getCoinsPrice();
+        coinsCurrentPrices = binanceF.updateInstruments(unfilteredPrice, coinsSupply);
         baAlerts = await baCheckCondition(coinsCurrentPrices);
         temaAlerts = await temaAlertCheck(coinsCurrentPrices);
         notifications = await notificationLogic.getNotifications();
@@ -54,6 +63,6 @@ const starChecking = async () => {
     }, 5000);
 }
 
-starChecking();
+start();
 
 server.listen(process.env.PORT);

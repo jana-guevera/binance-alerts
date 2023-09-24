@@ -5,8 +5,12 @@ const checkCondition = async (coinsPriceList) => {
     var alerts = await BasicAlert.find({});
     
     for(var i = 0; i < alerts.length; i++){
+        if(!coinsPriceList[alerts[i].coinName]){
+            continue;
+        }
+
         var currentAlert = alerts[i];
-        var currentPrice = parseFloat(coinsPriceList[currentAlert.coinName]);
+        var currentPrice = parseFloat(coinsPriceList[currentAlert.coinName].price);
         var notif = {
             _id: currentAlert._id,
             coinName: currentAlert.coinName, 

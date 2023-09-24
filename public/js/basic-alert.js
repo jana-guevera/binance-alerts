@@ -18,10 +18,16 @@ const baUpdateTable = () => {
 
 // Alert row template 
 const baTableRow = (currentAlert) => {
+    var currentPrice = "Not Set";
+
+    if(baCoinsPriceList[currentAlert.coinName]){
+        currentPrice = baCoinsPriceList[currentAlert.coinName].price;
+    }
+
     return `
         <tr id="ba-${currentAlert._id}">
             <td>${currentAlert.coinName}</td>
-            <td>${baCoinsPriceList[currentAlert.coinName]}</td>
+            <td>${currentPrice}</td>
             <td>${currentAlert.targetPrice}</td>
             <td>${currentAlert.direction.toUpperCase()}</td>
             <td>${formatDate(currentAlert.dateAdded)}</td>
@@ -49,7 +55,7 @@ const addBasicAlert = async () => {
     const direction = baDirection.value.trim();
     const addedDate = new Date(baAddedDate.value).toISOString();
     const note = baNote.value;
-    const coinCurrentPrice = parseFloat(baCoinsPriceList[coin]);
+    const coinCurrentPrice = parseFloat(baCoinsPriceList[coin].price);
 
 
     if(coinCurrentPrice < targetPrice && direction === "down"){

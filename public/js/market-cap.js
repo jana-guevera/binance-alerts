@@ -1,40 +1,35 @@
 const marketCapSearch = async () => {
-    const limit = document.querySelector(".market-cap-search input").value;
-    const url = "/market-cap?limit=" + limit;
-
     showLoader("#market-cap-btn", {content: generalLoader});
-
-    try{
-        const response = await fetch(url);
-        const coins = await response.json();
-
-        if(coins.error){
-            return showError({msg: coins.error});
-        }
-
-        if(coins.length < 1){
-            return showError({msg: "No coins found with the selected market cap!"});
-        }
-
-        var tbodyHtml = "";
+    const limit = parseFloat(document.querySelector(".market-cap-search input").value);
+    
+    var tbodyHtml = "";
         
-        coins.forEach(coin => {
+    const coins = Object.keys(baCoinsPriceList);
+    var foundCoins = [];
+    coins.forEach(coin => {
+        const currentCoin = baCoinsPriceList[coin];
+
+        if(parseFloat(currentCoin.marketCap) <= limit && coin.includes("USDT")){
             tbodyHtml += `
                 <tr>
-                    <td>${coin.symbol}</td>
-                    <td>${coin.currentPrice}</td>
-                    <td>${getNumber(coin.circulatingSupply)}</td>
-                    <td>${getNumber(coin.marketCap)}</td>
+                    <td>${coin}</td>
+                    <td>${currentCoin.price}</td>
+                    <td>${getNumber(currentCoin.cSupply)}</td>
+                    <td>${getNumber(currentCoin.marketCap)}</td>
                 </tr>
             `;
-        });
 
+            foundCoins.push(currentCoin);
+        }
+    });
+
+    if(foundCoins.length > 0){
         document.querySelector("#market-cap-tbody").innerHTML = tbodyHtml;
-    }catch(e){
-        showError({msg: e.message});
-    }finally{
-        hideLoader("#market-cap-btn", {content: "Search"});
+    }else{
+        showError({msg: "No coin found with the selected market cap!"});
     }
+
+    hideLoader("#market-cap-btn", {content: "Search"});
 }
 
 const getNumber = (num) => {

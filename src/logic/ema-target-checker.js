@@ -22,7 +22,7 @@ const temaCheckIfTargetPriceHit = async (coinsCurrentPrices) => {
 
     for(var i = 0; i < temaAlerts.length; i++){
         var alert = temaAlerts[i];
-        var currentPrice = parseFloat(coinsCurrentPrices[alert.coinName]);
+        var currentPrice = parseFloat(coinsCurrentPrices[alert.coinName].price);
 
         if(!alert.targetPrice && !alert.direction){
             continue;
@@ -69,7 +69,7 @@ const temaCalculateEmaForAlerts = async (coinsCurrentPrices) => {
             const closingPrices = emaCalculator.getClosingPriceArray(candleData);
             const ema = emaCalculator.calculateEMA(closingPrices, emaTarget.emaRange);
 
-            const currentPrice = parseFloat(coinsCurrentPrices[alert.coinName]);
+            const currentPrice = parseFloat(coinsCurrentPrices[alert.coinName].price);
             var notif = {
                 _id: emaTarget._id,
                 coinName: alert.coinName, 
