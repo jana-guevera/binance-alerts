@@ -7,7 +7,8 @@ const getCoinsPrice = async () => {
     try{
         const result = await fetch("https://fapi.binance.com/fapi/v1/ticker/24hr");
         const coins = await result.json();
-        
+        console.log(result);
+        console.log(coins);
         return coins;
     }catch(e){
         console.log(e);
