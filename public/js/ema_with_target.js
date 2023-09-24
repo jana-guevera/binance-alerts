@@ -247,10 +247,13 @@ const temaTableRow = (currentAlert) => {
     var targetPrice = currentAlert.targetPrice ? currentAlert.targetPrice: "Not Set";
     var direction = currentAlert.direction ? currentAlert.direction.toUpperCase() : "Not Set";
 
+    var currentPrice = baCoinsPriceList[currentAlert.coinName].price;
+    currentPrice = parseFloat(currentPrice).toFixed(4);
+
     return `
         <tr id="tema-tr-${currentAlert._id}">
             <td>${currentAlert.coinName}</td>
-            <td>${baCoinsPriceList[currentAlert.coinName].price}</td>
+            <td>${currentPrice}</td>
             <td>${targetPrice}</td>
             <td>${direction}</td>
             <td>${formatDate(currentAlert.dateAdded)}</td>
