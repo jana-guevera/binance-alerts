@@ -23,12 +23,12 @@ const marketCapSearch = async () => {
         }
     });
 
-    if(foundCoins.length > 0){
-        document.querySelector("#market-cap-tbody").innerHTML = tbodyHtml;
-    }else{
+    if(foundCoins.length < 1){
         showError({msg: "No coin found with the selected market cap!"});
-    }
-
+        
+    } 
+    
+    document.querySelector("#market-cap-tbody").innerHTML = tbodyHtml;
     hideLoader("#market-cap-btn", {content: "Search"});
 }
 

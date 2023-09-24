@@ -17,16 +17,16 @@ const getCoinsPrice = async () => {
 const updateInstruments = (prices, cSupply) => {
     const latestPrices = {};
 
-    prices.forEach(({ symbol, lastPrice, priceChange, priceChangePercent, volume }) => {
+    prices.forEach(({ symbol, markPrice}) => {
         latestPrices[symbol] = {};
-        latestPrices[symbol]["price"] = parseFloat(lastPrice);
-        latestPrices[symbol]["priceChange"] = parseFloat(priceChange);
-        latestPrices[symbol]["priceChangePercent"] = parseFloat(priceChangePercent);
-        latestPrices[symbol]["volume"] = parseFloat(volume);
+        latestPrices[symbol]["price"] = parseFloat(markPrice);
+        // latestPrices[symbol]["priceChange"] = parseFloat(priceChange);
+        // latestPrices[symbol]["priceChangePercent"] = parseFloat(priceChangePercent);
+        // latestPrices[symbol]["volume"] = parseFloat(volume);
 
         if(cSupply[symbol]){
             const coinSupply = parseFloat(cSupply[symbol]);
-            const marketCap = parseFloat(lastPrice) * coinSupply;
+            const marketCap = parseFloat(markPrice) * coinSupply;
             latestPrices[symbol]["cSupply"] = coinSupply;
             latestPrices[symbol]["marketCap"] = marketCap;
         }

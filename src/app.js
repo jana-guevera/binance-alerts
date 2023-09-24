@@ -29,10 +29,18 @@ app.use(notificationRouter);
 app.use(marketCapRouter);
 
 var coinsSupply = {};
+var unfilteredCoinPrices = [];
 var coinsCurrentPrices = {};
 var baAlerts = [];
 var temaAlerts = [];
 var notifications = [];
+
+const Binance = require('node-binance-api');
+const binance = new Binance().options({});
+
+binance.futuresMarkPriceStream((data) => {
+    unfilteredCoinPrices = data;
+});
 
 const start = async () => {
     coinsSupply = await binanceF.getCiculatingSupply();
@@ -42,8 +50,8 @@ const start = async () => {
 
 const starChecking = async () => {
     try{
-        const unfilteredPrice = await binanceF.getCoinsPrice();
-        coinsCurrentPrices = binanceF.updateInstruments(unfilteredPrice, coinsSupply);
+        const unfilteredPrices = [...unfilteredCoinPrices];
+        coinsCurrentPrices = binanceF.updateInstruments(unfilteredPrices, coinsSupply);
         baAlerts = await baCheckCondition(coinsCurrentPrices);
         temaAlerts = await temaAlertCheck(coinsCurrentPrices);
         notifications = await notificationLogic.getNotifications();
